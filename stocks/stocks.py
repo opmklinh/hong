@@ -2,17 +2,12 @@ import os
 import threading
 import time
 import datetime
-from urllib.request import Request, urlopen
 import pandas as pd
 from bs4 import BeautifulSoup
 import requests
-
-#from colorama import init, Style
-import json
-from collections import namedtuple
 import re
 
-#init()
+
 KOSPI = pd.read_csv("../data/name_code_list_KOSPI.csv",index_col='KOSPI_NAME')
 KOSDAQ = pd.read_csv("../data/name_code_list_KOSDAQ.csv",index_col='KOSDAQ_NAME')
 COIN = pd.read_csv("../data/crypto.csv",index_col='NAME')
@@ -38,8 +33,8 @@ def url_set_naver(name):
 def extracting_stock_naver(name):
 
     url = url_set_naver(name)
-    html = urlopen(url)
-    soup = BeautifulSoup(html, "html.parser")
+    html = requests.get(url).text
+    soup = BeautifulSoup(html, "lxml")
 
     return soup
 
@@ -73,9 +68,8 @@ def coinoneAPI(code):
     # 1분당 90회 요청 가능합니다.
     # https://api.coinone.co.kr/ticker/?currency=bch&format=json
     url = "https://api.coinone.co.kr/ticker/?currency=" + code + "&format=json"
-    read_ticker =urlopen(url).read()
-    #json_ticker = json.loads(read_ticker.decode('utf-8'))
-    coin_data = json.loads(read_ticker.decode('utf-8'), object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+    read_ticker =requests.get(url)
+    coin_data = read_ticker.json()
     return coin_data
 
 def coinone_coins():
@@ -90,9 +84,9 @@ def coinone_coins():
             name_num = len(re.findall('[가-힣]',coin_name))
             coin_name = coin_name.rjust(18-name_num)
 
-            last = float(coin_info.last)
-            volume = coin_info.volume
-            yesterday_last = float(coin_info.yesterday_last)
+            last = float(coin_info['last'])
+            volume = coin_info['volume']
+            yesterday_last = float(coin_info['yesterday_last'])
             percentage_change = round((last-yesterday_last)/yesterday_last*100,2)
             now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
@@ -113,7 +107,7 @@ def coinone_coins():
 def poloniexAPI():
     url = "https://poloniex.com/public?command=returnTicker"
     resp = requests.get(url)
-    data = json.loads(resp.text)
+    data = resp.json()
 
     return data
 
@@ -146,6 +140,7 @@ def poloniex_coins():
         
 flag = True
 
+
 def del_stock():
     stat = True
     while stat == True:
@@ -157,16 +152,15 @@ def del_stock():
            
             if temp in my_stocks:  
                 my_stocks.remove(temp)
-                with open('my_stocks.txt','w') as f:
+                with open('../data/my_stocks.txt','w') as f:
                     for stock in my_stocks:
                         f.write(stock+'\n')
             elif temp in my_coins:
                 my_coins.remove(temp)
-                with open('my_coins.txt','w') as f:
+                with open('../data/my_coins.txt','w') as f:
                     for coin in my_coins:
                         f.write(coin+'\n')
             elif temp == 'q':
-                menu()
                 stat = False
             else:
                 print('그런건 없다네!\n')
@@ -187,7 +181,10 @@ def view_mine():
         poloniex_coins()
         print('\n데이터는 10초 간격으로 갱신됩니다')
         print('Enter to quit')
-        time.sleep(10)
+        count = 0
+        while flag==True and count!=20:
+            count += 1
+            time.sleep(0.5)
         
        
 def get_input():
@@ -197,27 +194,34 @@ def get_input():
         if not name:
             flag = False
             break
+            
 
 def menu():
-    
-    print('등록을 마쳤다면 이제 구경해보게나!')
-    print('[1]시세보기 [2]주식 지우기 [3]되돌아가기')
-    num = input('입력: ')
-    if num == '1':
-        thread1=threading.Thread(target=get_input)
-        thread2=threading.Thread(target=view_mine)
-        thread2.daemon = True
-        thread1.start()
-        thread2.start()
 
-    elif num == '2':
-        del_stock()
+    global flag
+    while True:
+        os.system('cls||CLS||clear')
+        print('등록을 마쳤다면 이제 구경해보게나!')
+        print('[1]시세보기 [2]주식 지우기 [3]되돌아가기')
+        num = input('입력: ')
+        if num == '1':
+            thread1=threading.Thread(target=get_input)
+            thread2=threading.Thread(target=view_mine)
+            thread1.start()
+            thread2.start()
+            thread1.join()
+            thread2.join()
+            flag = True
 
-    elif num == '3':
-        return
 
-    else:
-        pass
+        elif num == '2':
+            del_stock()
+
+        elif num == '3':
+            break
+
+        else:
+            pass
             
 
   
@@ -234,14 +238,14 @@ def main():
         name = input('추가하기: ')
         if not name:
             menu()
-            break
+            #break
         elif (name in KOSPI['CODE']) or (name in KOSDAQ['CODE']):
             my_stocks.append(name)
-            with open('my_stocks.txt','a') as f:
+            with open('../data/my_stocks.txt','a') as f:
                 f.write(name+'\n')
         elif name in COIN.index:
             my_coins.append(name)
-            with open('my_coins.txt','a') as f:
+            with open('../data/my_coins.txt','a') as f:
                 f.write(name+'\n')
         elif name == 'q':
             print('다음에 또 봅세!')
