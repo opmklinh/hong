@@ -10,7 +10,7 @@ import re
 
 KOSPI = pd.read_csv("./data/name_code_list_KOSPI.csv",index_col='KOSPI_NAME')
 KOSDAQ = pd.read_csv("./data/name_code_list_KOSDAQ.csv",index_col='KOSDAQ_NAME')
-COIN = pd.read_csv("./data/crypto.csv",index_col='NAME')
+COIN = pd.read_csv("./data/crypto.csv",index_col='NAME',encoding='utf-8-sig')
 
 with open('./data/my_stocks.txt') as f:
     my_stocks = [i.strip() for i in f]

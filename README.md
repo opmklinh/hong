@@ -14,6 +14,8 @@ python3 이상에서 사용 가능합니다.<br>
 ```
 $cd <HONG_DIR>
 $python stocks/stocks.py
+(실패시,
+$python3 stocks/stocks.py)
 ```
 
 ### 라이센스
