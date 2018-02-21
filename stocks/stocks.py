@@ -8,14 +8,14 @@ import requests
 import re
 
 
-KOSPI = pd.read_csv("../data/name_code_list_KOSPI.csv",index_col='KOSPI_NAME')
-KOSDAQ = pd.read_csv("../data/name_code_list_KOSDAQ.csv",index_col='KOSDAQ_NAME')
-COIN = pd.read_csv("../data/crypto.csv",index_col='NAME')
+KOSPI = pd.read_csv("./data/name_code_list_KOSPI.csv",index_col='KOSPI_NAME')
+KOSDAQ = pd.read_csv("./data/name_code_list_KOSDAQ.csv",index_col='KOSDAQ_NAME')
+COIN = pd.read_csv("./data/crypto.csv",index_col='NAME')
 
-with open('../data/my_stocks.txt') as f:
+with open('./data/my_stocks.txt') as f:
     my_stocks = [i.strip() for i in f]
 
-with open('../data/my_coins.txt') as f:
+with open('./data/my_coins.txt') as f:
     my_coins = [i.strip() for i in f]
 
 def url_set_naver(name):
@@ -27,11 +27,9 @@ def url_set_naver(name):
     url_form ='http://finance.naver.com/item/sise.nhn?code=' + str(result).zfill(6)
     url = None
     url = url_form.format(result=result)
-
     return url
 
 def extracting_stock_naver(name):
-
     url = url_set_naver(name)
     html = requests.get(url).text
     soup = BeautifulSoup(html, "lxml")
@@ -148,22 +146,23 @@ def del_stock():
             print('현재 나의 주식: ',my_stocks)
             print('현재 나의 코인: ',my_coins)
             print('나가기는 "q"')
-            temp = input('지울 종목을 입력하시게나:')
+            temp = input('지울 종목을 입력하시게나:').upper()
            
             if temp in my_stocks:  
                 my_stocks.remove(temp)
-                with open('../data/my_stocks.txt','w') as f:
+                with open('./data/my_stocks.txt','w') as f:
                     for stock in my_stocks:
                         f.write(stock+'\n')
             elif temp in my_coins:
                 my_coins.remove(temp)
-                with open('../data/my_coins.txt','w') as f:
+                with open('./data/my_coins.txt','w') as f:
                     for coin in my_coins:
                         f.write(coin+'\n')
-            elif temp == 'q':
+            elif temp == 'Q':
                 stat = False
             else:
                 print('그런건 없다네!\n')
+                time.sleep(0.3)
                 continue
 
 def view_mine():
@@ -197,7 +196,6 @@ def get_input():
             
 
 def menu():
-
     global flag
     while True:
         os.system('cls||CLS||clear')
@@ -235,19 +233,22 @@ def main():
         print('추가하고 싶은 주식이나 비트코인이 있다면 아래 입력창에다 입력하게나\n 그리고 등록이 끝나면 Enter를 눌러')
         print('나가기는 q')
 
-        name = input('추가하기: ')
+        name = input('추가하기: ').upper()
         if not name:
             menu()
-            #break
+        elif name in my_coins:
+            continue
+        elif name in my_stocks:
+            continue
         elif (name in KOSPI['CODE']) or (name in KOSDAQ['CODE']):
             my_stocks.append(name)
-            with open('../data/my_stocks.txt','a') as f:
+            with open('./data/my_stocks.txt','a') as f:
                 f.write(name+'\n')
         elif name in COIN.index:
             my_coins.append(name)
-            with open('../data/my_coins.txt','a') as f:
+            with open('./data/my_coins.txt','a') as f:
                 f.write(name+'\n')
-        elif name == 'q':
+        elif name == 'Q':
             print('다음에 또 봅세!')
             break
         else:
