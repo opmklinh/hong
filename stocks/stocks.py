@@ -171,12 +171,14 @@ def view_mine():
         os.system('cls||CLS||clear')
 
         print('주식 시세')
+        kospi_kosdaq_market_price()
+    
         price()
             
         print('\n코인원 시세') 
         coinone_coins()
         
-        print('\n폴로닉스시세')
+        print('\nPoloniex 시세')
         poloniex_coins()
         print('\n데이터는 10초 간격으로 갱신됩니다')
         print('Enter to quit')
@@ -193,7 +195,15 @@ def get_input():
         if not name:
             flag = False
             break
-            
+        else:
+            continue
+
+def kospi_kosdaq_market_price():
+    html = requests.get("http://finance.naver.com/sise/")
+    soup = BeautifulSoup(html.text, "lxml")
+    temp = soup.find_all('ul')[6]
+    print('코스피 지수:', temp.find_all('span')[1].text)
+    print('코스닥 지수:', temp.find_all('span')[6].text)
 
 def menu():
     global flag
