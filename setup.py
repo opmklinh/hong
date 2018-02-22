@@ -6,6 +6,19 @@ setup(
     url ='https://github.com/Jyejin/hong',
     author ='yejinJ',
     author_email = 'dbswjd1977@gmail.com',
-    packages = find_packages()
-    test_suite = 'tests'
+    install_requires =[
+        'bs4',
+        'pandas',
+        'lxml',
+        'requests',
+        'colorama'
+    ],
+    include_package_data=True,
+    packages = find_packages(exclude=['tests']),
+    test_suite = 'tests',
+    py_modules=['stocks'],
+    entry_points={
+        'console_scripts' : ['hong = stocks.stocks:main',
+        ]
+    },
     )

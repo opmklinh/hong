@@ -12,11 +12,18 @@ python3 이상에서 사용 가능합니다.<br>
 
 ### 실행
 ```
+#pip로 설치하는 경우
+$pip install hong
+$hong
+
+#클론 또는 다운로드하는 경우
 $cd <HONG_DIR>
-$python stocks/stocks.py
-(실패시,
-$python3 stocks/stocks.py)
+$python setup.py install
+$hong
 ```
+### 참고
+비트코인의 경우, <br>
+비트코인,비트코인캐시,비트코인골드,이더리움,리플,퀀텀,라이트코인,모네로,대시,스텔라만 추가할 수 있습니다.
 
 ### 라이센스
 MIT License
