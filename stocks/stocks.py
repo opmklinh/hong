@@ -7,12 +7,9 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
-print('hi')
-data_dir = os.path.abspath('./data')
-KOSPI =pd.read_csv(os.path.join(data_dir,"name_code_list_KOSPI.csv"),index_col='KOSPI_NAME')
-#KOSPI = pd.read_csv(r"./data/name_code_list_KOSPI.csv",index_col='KOSPI_NAME')
-KOSDAQ = pd.read_csv(r"./data/name_code_list_KOSDAQ.csv",index_col='KOSDAQ_NAME')
-COIN = pd.read_csv(r"./data/crypto.csv",index_col='NAME',encoding='utf-8-sig')
+KOSPI = pd.read_csv("./data/name_code_list_KOSPI.csv",index_col='KOSPI_NAME')
+KOSDAQ = pd.read_csv("./data/name_code_list_KOSDAQ.csv",index_col='KOSDAQ_NAME')
+COIN = pd.read_csv("./data/crypto.csv",index_col='NAME',encoding='utf-8-sig')
 
 with open('./data/my_stocks.txt') as f:
     my_stocks = [i.strip() for i in f]
@@ -49,7 +46,6 @@ def price():
         temp_numbers = [td_number.text.translate({ord('\n'): ' ',ord('\t'): '' }) for td_number in td_numbers]
     
         now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        #output = stock_name + '{:>11}{:>12}{:>11}{:>20}'.format(temp_numbers[0].strip(),temp_numbers[2].strip(),'('+temp_numbers[4].strip()+')',now_time)
 
         if '하락' in temp_numbers[2]:
             output = stock_name + '{:>11}{:>11}{:>9}{:>23}'.format(temp_numbers[0].strip(),temp_numbers[2].strip(),'('+temp_numbers[4].strip()+')',now_time)
