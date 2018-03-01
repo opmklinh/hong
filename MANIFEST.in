@@ -1,9 +1,5 @@
 #include the license file
-include LICENSE.txt
+include LICENSE
 
 #include the data files
-include data/crypto.csv
-include data/my_coins.txt
-include data/my_stocks.txt
-include data/name_code_list_kosdaq.csv
-include data/name_code_list_KOSPI.csv
+recursive-include data *
