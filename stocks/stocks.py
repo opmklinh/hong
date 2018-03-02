@@ -8,15 +8,17 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
+dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(dir)
 
-KOSPI = pd.read_csv(r"../data/name_code_list_KOSPI.csv",index_col="KOSPI_NAME")
-KOSDAQ = pd.read_csv(r"../data/name_code_list_KOSDAQ.csv",index_col="KOSDAQ_NAME")
-COIN = pd.read_csv(r"../data/crypto.csv",index_col='NAME',encoding='utf-8-sig')
+KOSPI = pd.read_csv("./data/name_code_list_KOSPI.csv",index_col="KOSPI_NAME")
+KOSDAQ = pd.read_csv("./data/name_code_list_kosdaq.csv",index_col="KOSDAQ_NAME")
+COIN = pd.read_csv("./data/crypto.csv",index_col='NAME',encoding='utf-8-sig')
 
-with open('../data/my_stocks.txt') as f:
+with open('./data/my_stocks.txt') as f:
     my_stocks = [i.strip() for i in f]
 
-with open('../data/my_coins.txt') as f:
+with open('./data/my_coins.txt') as f:
     my_coins = [i.strip() for i in f]
 
 def url_set_naver(name):
@@ -150,12 +152,12 @@ def del_stock():
            
             if temp in my_stocks:  
                 my_stocks.remove(temp)
-                with open(r'../data/my_stocks.txt','w') as f:
+                with open('./data/my_stocks.txt','w') as f:
                     for stock in my_stocks:
                         f.write(stock+'\n')
             elif temp in my_coins:
                 my_coins.remove(temp)
-                with open(r'../data/my_coins.txt','w') as f:
+                with open('./data/my_coins.txt','w') as f:
                     for coin in my_coins:
                         f.write(coin+'\n')
             elif temp == 'Q':
@@ -252,11 +254,11 @@ def main():
             continue
         elif (name in KOSPI['CODE']) or (name in KOSDAQ['CODE']):
             my_stocks.append(name)
-            with open('../data/my_stocks.txt','a') as f:
+            with open('./data/my_stocks.txt','a') as f:
                 f.write(name+'\n')
         elif name in COIN.index:
             my_coins.append(name)
-            with open('../data/my_coins.txt','a') as f:
+            with open('./data/my_coins.txt','a') as f:
                 f.write(name+'\n')
         elif name == 'Q':
             print('다음에 또 봅세!')

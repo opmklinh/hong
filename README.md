@@ -13,7 +13,12 @@ python3 이상에서 사용 가능합니다.<br>
 ### 실행
 ```
 #pip로 설치하는 경우
+#윈도우
 $pip install hong
+$hong
+#MAC,우분투
+$pip3 install hong
+$sudo -s #개인 파일을 변경하기 위해 권한이 필요합니다.
 $hong
 
 #클론 또는 다운로드하는 경우
